@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f4e8dc" />
+  <meta name="description" content="دعوة خطوبة Maria & Hassan - 24 ديسمبر 2026" />
+  <title>Maria & Hassan | Fiançailles</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink: #573d2e;
+      --ink-soft: #80634f;
+      --gold: #b08a58;
+      --gold-light: #dfc59f;
+      --cream: #fffaf5;
+      --rose: #e9c5c0;
+      --rose-deep: #9a6665;
+      --line: rgba(176, 138, 88, .55);
+      --shadow: 0 12px 34px rgba(91, 62, 43, .12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #f4e8dc url('background.png') center top / 100% auto repeat-y fixed;
+      font-family: 'Cormorant Garamond', 'Amiri', serif;
+      overflow-x: hidden;
+    }
+    body.locked { overflow: hidden; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+
+    /* شاشة فيديو الافتتاح */
+    .intro-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: block;
+      overflow: hidden;
+      background: #211b18;
+      transition: opacity .8s ease, visibility .8s ease;
+    }
+    .intro-screen.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .intro-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #211b18;
+    }
+    .intro-shade {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,.02) 45%, rgba(0,0,0,.08) 68%, rgba(0,0,0,.42) 100%);
+    }
+    .open-invite {
+      position: absolute;
+      z-index: 2;
+      left: 50%;
+      bottom: max(66px, calc(env(safe-area-inset-bottom) + 58px));
+      transform: translateX(-50%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 17px;
+      border: 1px solid rgba(255,255,255,.78);
+      border-radius: 999px;
+      color: #fffaf4;
+      background: rgba(82, 57, 42, .48);
+      backdrop-filter: blur(8px);
+      font: 600 14px 'Amiri', serif;
+      white-space: nowrap;
+      cursor: pointer;
+      box-shadow: 0 5px 18px rgba(0,0,0,.16);
+    }
+    .open-invite .play-icon { font-size: 14px; }
+    .intro-hint {
+      position: absolute;
+      z-index: 2;
+      left: 0;
+      right: 0;
+      bottom: max(18px, env(safe-area-inset-bottom));
+      text-align: center;
+      color: #fffaf4;
+      font: 13px 'Amiri', serif;
+      text-shadow: 0 2px 8px #0008;
+      pointer-events: none;
+    }
+
+    /* زر الموسيقى الثابت */
+    .music-toggle {
+      position: fixed;
+      z-index: 900;
+      top: max(14px, env(safe-area-inset-top));
+      left: 14px;
+      width: 48px;
+      height: 48px;
+      display: none;
+      place-items: center;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      color: var(--ink);
+      background: rgba(255, 250, 245, .92);
+      box-shadow: 0 5px 18px rgba(73, 48, 32, .16);
+      font-size: 19px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+    }
+    .music-toggle.visible { display: grid; }
+    .music-toggle:focus-visible, .open-invite:focus-visible, .map-button:focus-visible {
+      outline: 3px solid #8b6541;
+      outline-offset: 3px;
+    }
+
+    main { display: none; }
+    main.visible { display: block; animation: pageIn .9s ease both; }
+    @keyframes pageIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+    .cover-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 100svh;
+      object-fit: cover;
+      object-position: center;
+      background: #e8d5c4;
+    }
+
+    .content-wrap {
+      position: relative;
+      width: min(100%, 760px);
+      margin: 0 auto;
+      padding: 28px 17px 48px;
+      isolation: isolate;
+    }
+    .content-wrap::before {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      background: rgba(255, 248, 240, .06);
+      pointer-events: none;
+    }
+    .section {
+      position: relative;
+      margin: 0 auto 25px;
+      padding: 30px 20px;
+      text-align: center;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(255, 249, 243, .34);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(2px);
+      overflow: hidden;
+    }
+    .section::before, .section::after {
+      content: '❧';
+      display: block;
+      color: var(--gold);
+      font-size: 25px;
+      line-height: 1;
+      opacity: .8;
+    }
+    .section::before { margin-bottom: 13px; }
+    .section::after { margin-top: 15px; transform: rotate(180deg); }
+    .eyebrow {
+      margin: 0 0 5px;
+      color: var(--ink-soft);
+      font: 500 15px 'Cormorant Garamond', serif;
+      letter-spacing: .19em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    .section-title {
+      margin: 0 0 20px;
+      color: var(--ink);
+      font: 600 clamp(27px, 6vw, 37px) 'Cormorant Garamond', serif;
+      letter-spacing: .06em;
+      line-height: 1.12;
+    }
+    .arabic-title {
+      margin: 7px 0 22px;
+      font: 700 25px 'Amiri', serif;
+      color: var(--ink);
+    }
+    .quran {
+      margin: 8px auto 23px;
+      max-width: 590px;
+      color: #73513a;
+      font: 25px/2 'Amiri', serif;
+    }
+    .verse-ref { color: var(--ink-soft); font: 15px 'Amiri', serif; }
+    .family-name {
+      margin: 19px 0 14px;
+      color: var(--ink);
+      font: 600 21px 'Cormorant Garamond', serif;
+      letter-spacing: .16em;
+    }
+    .invitation-copy {
+      max-width: 560px;
+      margin: 0 auto 18px;
+      color: #614838;
+      font: 19px/1.65 'Cormorant Garamond', serif;
+    }
+    .couple-names {
+      margin: 8px 0 19px;
+      color: #69412f;
+      font: 400 clamp(52px, 12vw, 78px)/1.15 'Great Vibes', cursive;
+      direction: ltr;
+    }
+    .arabic-closing { font: 23px/1.8 'Amiri', serif; }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .detail-item {
+      padding: 17px 8px 15px;
+      border: 1px solid rgba(176,138,88,.48);
+      border-radius: 18px;
+      background: rgba(255,255,255,.22);
+    }
+    .detail-icon { display: block; margin-bottom: 9px; color: var(--gold); font-size: 27px; line-height: 1.2; font-family: 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+    .detail-label { margin: 0 0 7px; color: #8b6b50; font: 600 14px 'Cormorant Garamond', serif; letter-spacing: .12em; }
+    .detail-value { margin: 0; color: #583e2e; font: 600 19px/1.35 'Cormorant Garamond', serif; }
+    .detail-value.arabic { font: 20px/1.5 'Amiri', serif; }
+    .small-note { margin: 20px 0 0; color: #80634f; font: italic 17px/1.5 'Cormorant Garamond', serif; }
+
+    .countdown-kicker { margin: 0 0 8px; color: var(--rose-deep); font: 600 15px 'Cormorant Garamond', serif; letter-spacing: .2em; }
+    .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; direction: ltr; }
+    .time-box {
+      padding: 13px 4px 10px;
+      border: 1px solid #d7b98f;
+      border-radius: 15px;
+      background: rgba(255, 250, 245, .34);
+      box-shadow: inset 0 0 0 3px rgba(255,255,255,.55);
+    }
+    .time-number { display: block; color: #69452f; font: 600 clamp(27px, 7vw, 39px)/1 'Cormorant Garamond', serif; font-variant-numeric: tabular-nums; }
+    .time-label { display: block; margin-top: 7px; color: #8b6d55; font: 600 11px 'Cormorant Garamond', serif; letter-spacing: .08em; }
+    .countdown-footer { margin: 18px 0 0; color: #86664d; font: italic 18px 'Cormorant Garamond', serif; }
+
+    .place-pin { margin: 5px 0 10px; color: #916c47; font-size: 43px; line-height: 1.2; font-family: 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+    .place-name { margin: 0 0 5px; color: #5b4030; font: 600 26px 'Cormorant Garamond', serif; letter-spacing: .08em; }
+    .place-city { margin: 0 0 20px; color: #80634f; font: 600 17px 'Cormorant Garamond', serif; letter-spacing: .12em; }
+    .place-caption { margin: 0 0 16px; color: #8b6c55; font: italic 21px 'Great Vibes', cursive; }
+    .map-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 10px 22px;
+      border: 1px solid #a9855a;
+      border-radius: 999px;
+      color: #684b35;
+      background: rgba(255,255,255,.30);
+      text-decoration: none;
+      font: 600 14px 'Cormorant Garamond', serif;
+      letter-spacing: .07em;
+    }
+
+    .dress-code-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 17px;
+      max-width: 430px;
+      margin: 0 auto;
+      padding: 15px;
+      border: 1px solid #d9bda0;
+      border-radius: 20px;
+      background: rgba(255, 246, 242, .28);
+    }
+    .dress-icon { color: #a76f70; font-size: 35px; line-height: 1.2; font-family: 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+    .dress-label { margin: 0; color: #80604a; font: 600 15px 'Cormorant Garamond', serif; letter-spacing: .13em; }
+    .dress-value { margin: 2px 0 0; color: #9a6665; font: 400 31px 'Great Vibes', cursive; }
+    .rose-swatch { width: 27px; height: 27px; border-radius: 50%; border: 2px solid #fff; background: #e8c3c1; box-shadow: 0 0 0 1px #c79c94; }
+
+    .rules-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .rule-card {
+      min-height: 225px;
+      padding: 19px 12px;
+      border: 1px solid rgba(176,138,88,.55);
+      border-radius: 18px;
+      background: rgba(255,255,255,.22);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .rule-icon { display: grid; place-items: center; width: 62px; height: 62px; margin-bottom: 14px; border: 1px solid #d0b184; border-radius: 50%; color: #8c6a48; background: rgba(255,255,255,.22); font-size: 27px; line-height: 1.2; font-family: 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+    .rule-title { margin: 0 0 8px; color: #5d4332; font: 700 21px/1.5 'Amiri', serif; }
+    .rule-text { margin: 0; color: #6f5542; font: 17px/1.45 'Cormorant Garamond', serif; }
+    .final-title { margin: 0 0 10px; color: #694a36; font: 400 clamp(35px, 8vw, 48px)/1.2 'Great Vibes', cursive; direction: ltr; }
+    .final-copy { margin: 0; color: #80634f; font: italic 18px/1.5 'Cormorant Garamond', serif; }
+    .signature { margin: 16px 0 0; color: #9b7651; font: 400 34px 'Great Vibes', cursive; direction: ltr; }
+
+    @media (max-width: 430px) {
+      .content-wrap { padding: 19px 12px 36px; }
+      .section { padding: 25px 14px; margin-bottom: 17px; border-radius: 20px; }
+      .detail-grid { gap: 6px; }
+      .detail-item { padding: 13px 4px; }
+      .detail-value { font-size: 16px; }
+      .detail-value.arabic { font-size: 18px; }
+      .detail-label { font-size: 12px; }
+      .rules-grid { gap: 8px; }
+      .rule-card { min-height: 230px; padding: 15px 8px; }
+      .rule-title { font-size: 19px; }
+      .rule-text { font-size: 15px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body class="locked">
+  <!-- استبدل intro.mp4 بفيديو الافتتاح، و music.mp3 بالموسيقى -->
+  <div class="intro-screen" id="introScreen">
+    <video class="intro-video" id="introVideo" playsinline preload="auto" poster="intro-poster.jpg">
+      <source src="intro.mp4" type="video/mp4">
+    </video>
+    <div class="intro-shade"></div>
+    <button class="open-invite" id="openInvite" type="button">
+      <span class="play-icon" aria-hidden="true">▶</span>
+      <span>افتح الدعوة · Ouvrir l'invitation</span>
+    </button>
+    <div class="intro-hint">Maria &amp; Hassan · 24.12.2026</div>
+  </div>
+
+  <audio id="backgroundMusic" src="music.mp3" preload="auto" loop></audio>
+  <button class="music-toggle" id="musicToggle" type="button" aria-label="إيقاف الموسيقى" title="إيقاف الموسيقى">Ⅱ</button>
+
+  <main id="invitation">
+    <!-- الصورة الأولى: تظهر بعد انتهاء فيديو الافتتاح -->
+    <img class="cover-image" src="cover.png" alt="Maria & Hassan - Fiançailles" />
+
+    <!-- خلفية الأقسام الثابتة هي background.png -->
+    <div class="content-wrap">
+      <!-- القسم الأول: رسالة الدعوة والآية -->
+      <section class="section" id="invitation-message">
+        <p class="eyebrow">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+        <p class="quran">﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنْفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ ﴾</p>
+        <p class="verse-ref">سورة الروم – الآية 21</p>
+        <p class="family-name">LA FAMILLE BOUKHETAB</p>
+        <p class="invitation-copy">A l'immense joie et au grand bonheur,<br>La famille Boukhetab a le plaisir de vous convier à célébrer les fiançailles de leur chère fille</p>
+        <h1 class="couple-names">Maria &amp; Hassan</h1>
+        <p class="invitation-copy">Et vous invite à partager avec elle ces précieux instants de bonheur, d'amour et de joie.</p>
+        <p class="arabic-closing">حضوركم يزيد فرحتنا جمالاً، ومشاركتكم لنا هذه اللحظات السعيدة شرف لنا.</p>
+      </section>
+
+      <!-- القسم الثاني: تفاصيل اليوم -->
+      <section class="section" id="event-details">
+        <p class="eyebrow">LES DÉTAILS</p>
+        <h2 class="section-title">DE NOTRE JOURNÉE</h2>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-icon" aria-hidden="true">📅</span>
+            <p class="detail-label">DATE</p>
+            <p class="detail-value">Jeudi<br>24 Décembre<br>2026</p>
+          </div>
+          <div class="detail-item">
+            <span class="detail-icon" aria-hidden="true">🕒</span>
+            <p class="detail-label">HEURE</p>
+            <p class="detail-value">14:00<br>–<br>19:30</p>
+          </div>
+          <div class="detail-item">
+            <span class="detail-icon" aria-hidden="true">📍</span>
+            <p class="detail-label">LIEU</p>
+            <p class="detail-value">Salle des fêtes<br>Ksar Maya<br>Hammadi</p>
+          </div>
+        </div>
+        <p class="small-note">Nous vous prions d'arriver à l'heure afin de partager pleinement chaque instant de cette belle journée.<br>Votre présence compte énormément pour nous.</p>
+      </section>
+
+      <!-- القسم الثالث: العداد التنازلي -->
+      <section class="section" id="countdown-section">
+        <p class="countdown-kicker">⏳ LE GRAND JOUR APPROCHE</p>
+        <h2 class="section-title">Compte à rebours</h2>
+        <p class="family-name">Maria &amp; Hassan</p>
+        <div class="countdown-grid" aria-label="الوقت المتبقي حتى الخطوبة">
+          <div class="time-box"><span class="time-number" id="days">00</span><span class="time-label">JOURS</span></div>
+          <div class="time-box"><span class="time-number" id="hours">00</span><span class="time-label">HEURES</span></div>
+          <div class="time-box"><span class="time-number" id="minutes">00</span><span class="time-label">MINUTES</span></div>
+          <div class="time-box"><span class="time-number" id="seconds">00</span><span class="time-label">SECONDES</span></div>
+        </div>
+        <p class="countdown-footer">Chaque seconde nous rapproche d'un bonheur partagé ✨</p>
+      </section>
+
+      <!-- قسم الموقع -->
+      <section class="section" id="venue">
+        <p class="eyebrow">LE LIEU</p>
+        <h2 class="place-caption">Where our forever begins.</h2>
+        <div class="place-pin" aria-hidden="true">📍</div>
+        <h2 class="place-name">SALLE DES FÊTES<br>KSAR MAYA</h2>
+        <p class="place-city">HAMMADI – BOUMERDÈS</p>
+        <a class="map-button" href="https://www.google.com/maps/search/?api=1&query=Salle+des+fetes+Ksar+Maya+Hammadi+Boumerdes+Algeria" target="_blank" rel="noopener noreferrer">
+          OUVRIR L'ITINÉRAIRE SUR GOOGLE MAPS <span aria-hidden="true">➤</span>
+        </a>
+      </section>
+
+      <!-- Dress Code -->
+      <section class="section" id="dress-code">
+        <p class="eyebrow">UNE TOUCHE DE DOUCEUR</p>
+        <h2 class="section-title">Dress Code</h2>
+        <div class="dress-code-card">
+          <span class="dress-icon" aria-hidden="true">👗</span>
+          <div>
+            <p class="dress-label">COULEUR SUGGÉRÉE</p>
+            <p class="dress-value">Rose claire</p>
+          </div>
+          <span class="rose-swatch" aria-label="لون وردي فاتح"></span>
+        </div>
+      </section>
+
+      <!-- القسم الأخير: التعليمات الخاصة -->
+      <section class="section" id="special-instructions">
+        <p class="eyebrow">CONSIGNES PARTICULIÈRES</p>
+        <h2 class="arabic-title">تعليمات خاصة</h2>
+        <div class="rules-grid">
+          <article class="rule-card">
+            <div class="rule-icon" aria-hidden="true">🚫📸</div>
+            <h3 class="rule-title">ممنوع التصوير</h3>
+            <p class="rule-text">Photos interdites</p>
+          </article>
+          <article class="rule-card">
+            <div class="rule-icon" aria-hidden="true">👥</div>
+            <h3 class="rule-title">يرجى الالتزام بعدد الحضور المحدد في الدعوة</h3>
+            <p class="rule-text">Merci de respecter le nombre d'invités indiqué sur l'invitation.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- العبارة الختامية -->
+      <section class="section" id="final-message">
+        <h2 class="final-title">Nous avons hâte de vous accueillir</h2>
+        <p class="final-copy">Votre présence rendra ce jour encore plus précieux.</p>
+        <p class="signature">Maria &amp; Hassan</p>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const introScreen = document.getElementById('introScreen');
+    const introVideo = document.getElementById('introVideo');
+    const openInvite = document.getElementById('openInvite');
+    const invitation = document.getElementById('invitation');
+    const music = document.getElementById('backgroundMusic');
+    const musicToggle = document.getElementById('musicToggle');
+
+    let musicStarted = false;
+
+    function revealInvitation() {
+      introScreen.classList.add('is-hidden');
+      invitation.classList.add('visible');
+      musicToggle.classList.add('visible');
+      document.body.classList.remove('locked');
+      window.setTimeout(() => { introScreen.style.display = 'none'; }, 850);
+    }
+
+    async function startExperience() {
+      openInvite.disabled = true;
+      openInvite.style.opacity = '.65';
+
+      // نبدأ الموسيقى مباشرة من نقرة المستخدم حتى يسمح المتصفح بالتشغيل.
+      try {
+        await music.play();
+        musicStarted = true;
+        updateMusicButton();
+      } catch (error) {
+        console.warn('تعذر تشغيل الموسيقى. تحقق من وجود music.mp3.', error);
+      }
+
+      try {
+        introVideo.currentTime = 0;
+        await introVideo.play();
+      } catch (error) {
+        console.warn('تعذر تشغيل فيديو الافتتاح. سيتم عرض الدعوة مباشرة.', error);
+        revealInvitation();
+      }
+    }
+
+    function updateMusicButton() {
+      const playing = !music.paused;
+      musicToggle.textContent = playing ? 'Ⅱ' : '▶';
+      musicToggle.setAttribute('aria-label', playing ? 'إيقاف الموسيقى' : 'تشغيل الموسيقى');
+      musicToggle.title = playing ? 'إيقاف الموسيقى' : 'تشغيل الموسيقى';
+    }
+
+    openInvite.addEventListener('click', startExperience);
+    introVideo.addEventListener('ended', revealInvitation);
+    music.addEventListener('play', updateMusicButton);
+    music.addEventListener('pause', updateMusicButton);
+
+    musicToggle.addEventListener('click', async () => {
+      if (music.paused) {
+        try { await music.play(); } catch (error) { console.warn('تعذر تشغيل الموسيقى.', error); }
+      } else {
+        music.pause();
+      }
+      updateMusicButton();
+    });
+
+    // عداد تنازلي إلى 24 ديسمبر 2026، الساعة 14:00 بتوقيت الجزائر (+01:00).
+    const eventDate = new Date('2026-12-24T14:00:00+01:00').getTime();
+    const pad = value => String(value).padStart(2, '0');
+
+    function updateCountdown() {
+      const now = Date.now();
+      let distance = eventDate - now;
+      if (distance < 0) distance = 0;
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((distance / (1000 * 60)) % 60);
+      const seconds = Math.floor((distance / 1000) % 60);
+
+      document.getElementById('days').textContent = pad(days);
+      document.getElementById('hours').textContent = pad(hours);
+      document.getElementById('minutes').textContent = pad(minutes);
+      document.getElementById('seconds').textContent = pad(seconds);
+    }
+
+    updateCountdown();
+    window.setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>
